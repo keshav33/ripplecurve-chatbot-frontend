@@ -5,3 +5,9 @@
 .welcome-container h1 {
     margin-bottom: 62px;
 }
+
+@media screen and (max-width: 880px) {
+    .welcome-container {
+        margin-top: 20vh;
+    } 
+}

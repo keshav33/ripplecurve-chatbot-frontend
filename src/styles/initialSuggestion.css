@@ -16,3 +16,13 @@
     align-items: center;
     border: 0.1px solid rgb(124, 124, 124);
 }
+
+@media screen and (max-width: 880px) {
+    .suggestion-container {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .suggestion-card {
+        width: 90vw;
+    }
+}

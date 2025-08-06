@@ -68,3 +68,13 @@
         opacity: 1;
     }
 }
+
+@media screen and (max-width: 880px) {
+    .chat-container {
+        width: 90vw;
+    }
+
+    .user-message {
+        max-width: 300px;
+    }
+}

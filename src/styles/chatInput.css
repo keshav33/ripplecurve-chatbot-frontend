@@ -22,7 +22,7 @@ textarea {
     background-color: var(--secondary-background-color);
     border: none;
     color: var(--text-color);
-    padding: 8px;
+    padding: 12px;
     resize: none;
 }
 
@@ -71,5 +71,15 @@ textarea:focus-visible {
     100% {
         opacity: 1;
         transform: scale(1);
+    }
+}
+
+@media screen and (max-width: 880px) {
+    textarea {
+        width: 90vw;
+    }
+
+    .input-action-container {
+        width: 90vw;
     }
 }
