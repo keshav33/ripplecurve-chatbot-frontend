@@ -1,0 +1,48 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.header i.pi {
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+.p-drawer.p-component.sidebar {
+    background: var(--secondary-background-color) !important;
+    padding: 16px;
+}
+
+.sidebar-container {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 52px);
+    justify-content: space-between;
+}
+
+.chat-history-container {
+    margin-top: 60px;
+}
+
+.history-item {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.history-item:hover {
+    background-color: var(--background-color);
+}
+
+.settings {
+    padding: 12px;
+    background-color: var(--secondary-background-color);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgb(124, 124, 124);
+}

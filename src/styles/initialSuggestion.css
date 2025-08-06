@@ -1,0 +1,18 @@
+.suggestion-container {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.suggestion-card {
+    width: 256px;
+    height: 60px;
+    border-radius: 8px;
+    background-color: var(--secondary-background-color);
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+    border: 0.1px solid rgb(124, 124, 124);
+}

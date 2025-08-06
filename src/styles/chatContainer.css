@@ -1,0 +1,70 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--header-height) - 130px);
+    overflow: scroll;
+    width: 800px;
+}
+
+.user-message,
+.assistant-message {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.user-message {
+    max-width: 400px;
+    background-color: var(--secondary-background-color);
+    border-radius: 8px;
+    padding: 8px;
+    float: right;
+}
+
+.assistant-message {
+    width: 90%;
+}
+
+/* Loading dots animation */
+.loading-container {
+    display: flex;
+    justify-content: flex-start;
+    width: 90%;
+}
+
+.loading-dots {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--text-color);
+    opacity: 0.6;
+    animation: bounce 1.4s infinite ease-in-out;
+}
+
+.dot:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.dot:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0s;
+}
+
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
