@@ -1,7 +1,16 @@
+
 .chat-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: calc(100vh - var(--header-height) - var(--footer-height));
     width: 100%;
+}
+
+.welcome-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: calc(100vh - var(--header-height) - var(--footer-height));
 }

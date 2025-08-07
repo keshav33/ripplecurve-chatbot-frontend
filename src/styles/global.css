@@ -1,17 +1,40 @@
+
 :root {
-    --background-color: rgb(31, 31, 31);
-    --text-color: white;
+    /* Color palette */
+    --background-color: #f6f7f9;
+    --secondary-background-color: #e9eaf0;
+    --primary-text-color: #23272f;
+    --secondary-text-color: #3a4151;
+    --accent-color: #b3b7c8;
+    --hover-color: #e0e1e7;
+    --card-bg: #e9eaf0;
+    --card-hover-bg: #d3d6e2;
+    --border-color: #e9eaf0;
+    --shadow-color: rgba(60, 60, 90, 0.06);
+    --shadow-color-light: rgba(60, 60, 90, 0.04);
+
+    /* Font */
+    --font-family: 'Inter', Arial, sans-serif;
+    --font-size-base: 1rem;
+    --font-size-small: 0.95rem;
+    --font-size-large: 1.2rem;
+    --font-weight-normal: 400;
+    --font-weight-bold: 600;
+
+    /* Layout */
     --header-height: 60px;
     --footer-height: 20px;
-    --secondary-background-color: #333333;
-    --hover-color: rgb(21, 21, 21);
+    --border-radius: 12px;
+    --container-padding: 18px;
 }
 
 body {
     background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: Arial, sans-serif;
+    color: var(--primary-text-color);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
     padding: 8px;
+    transition: background 0.3s, color 0.3s;
 }
 
 i.pi {

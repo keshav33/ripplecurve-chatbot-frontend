@@ -1,13 +1,6 @@
-.welcome-container {
-    margin-top: 30vh;
-} 
-
 .welcome-container h1 {
-    margin-bottom: 62px;
-}
-
-@media screen and (max-width: 880px) {
-    .welcome-container {
-        margin-top: 20vh;
-    } 
+    margin-bottom: 58px;
+    color: #3a4151;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 }

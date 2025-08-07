@@ -1,13 +1,16 @@
+
 .input-container {
     display: flex;
     flex-direction: column;
-    border: 2px solid transparent;
-    border-radius: 12px;
-    transition: border-color 0.2s ease;
+    border: 2px solid var(--shadow-color);
+    border-radius: var(--border-radius);
+    background: var(--card-bg);
+    transition: border-color 0.2s ease, background 0.2s;
 }
 
 .input-container.focused {
-    border-color: rgb(124, 124, 124);
+    border-color: var(--accent-color);
+    background: var(--background-color);
 }
 
 .pan-bottom {
@@ -18,12 +21,13 @@
 textarea {
     width: 800px;
     height: 60px;
-    border-radius: 12px 12px 0 0;
-    background-color: var(--secondary-background-color);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    background-color: var(--background-color);
     border: none;
-    color: var(--text-color);
+    color: var(--primary-text-color);
     padding: 12px;
     resize: none;
+    font-family: var(--font-family);
 }
 
 textarea:focus-visible {
@@ -37,16 +41,16 @@ textarea:focus-visible {
     align-items: center;
     width: 800px;
     padding: 12px;
-    background-color: var(--secondary-background-color);
-    border-radius: 0 0 12px 12px;
+    background-color: var(--background-color);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
 }
 
 .additional-actions {
     padding: 12px;
-    background-color: var(--secondary-background-color);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgb(124, 124, 124);
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px var(--shadow-color);
+    border: 1px solid var(--border-color);
 }
 
 .pi-microphone {

@@ -2,10 +2,12 @@
     display: flex;
     width: 100%;
     height: var(--footer-height);
-    opacity: 0.4;
-    font-size: small;
+    opacity: 0.7;
+    font-size: var(--font-size-small);
     justify-content: center;
     align-items: center;
     position: absolute;
     bottom: 6px;
+    background: var(--background-color);
+    color: var(--primary-text-color);
 }
