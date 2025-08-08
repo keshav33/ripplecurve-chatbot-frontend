@@ -5,30 +5,53 @@ import ChatInput from "@/components/ChatInput.vue";
 import ChatContainer from "@/components/ChatContainer.vue";
 import Footer from "@/components/Footer.vue";
 import "../styles/chat.css";
-import InitialSuggestion from "@/components/InitialSuggestion.vue";
-import { ref } from "vue";
-import { getChatStreamEvent } from "@/api/chat";
+import { ref, onMounted, watch } from "vue";
+import {
+  getChatHistoryForUser,
+  getChatStreamEvent,
+  getMessagesForThreadId,
+} from "@/api/chat";
 import { v4 as uuidv4 } from "uuid";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+import { useUser } from "@clerk/vue";
 
 const router = useRouter();
-
+const route = useRoute();
 const chats = ref([]);
-const threadId = ref(router?.params?.threadId || "");
-const chatHistory = ref([
-  {
-    id: "1",
-    title: "New Chat 1",
-  },
-  {
-    id: "2",
-    title: "New Chat 2",
-  },
-  {
-    id: "3",
-    title: "New Chat 3",
-  },
-]);
+const threadId = ref("");
+const user = ref({});
+const { user: clerkUser, isLoaded } = useUser();
+
+const chatHistory = ref([]);
+
+onMounted(() => {
+  if (route.params.threadId) {
+    threadId.value = route.params.threadId;
+    handleHistorySelect(threadId.value);
+  }
+});
+
+watch(
+  () => isLoaded.value,
+  () => {
+    if (clerkUser.value) {
+      user.value = {
+        id: clerkUser.value.id,
+        name: clerkUser.value.fullName,
+        email: clerkUser.value.emailAddresses[0]?.emailAddress || "",
+      };
+    }
+  }
+);
+
+watch(
+  () => user.value,
+  async () => {
+    if (user.value.id) {
+      chatHistory.value = await getChatHistoryForUser(user.value.id);
+    }
+  }
+);
 
 const loading = ref(false);
 
@@ -39,12 +62,19 @@ const submitChat = async (chat, type) => {
     id: humanId,
     type,
     text: chat,
+    feedback: "",
     isWebSearch: false,
     urls: [],
   });
   loading.value = true;
   try {
-    const streamEvent = await getChatStreamEvent(chat, threadId.value);
+    const streamEvent = await getChatStreamEvent({
+      message: chat,
+      threadId: threadId.value,
+      user: user.value,
+      humanId,
+      assistantId,
+    });
     const decoder = new TextDecoder();
     chats.value.push({
       id: assistantId,
@@ -62,7 +92,6 @@ const submitChat = async (chat, type) => {
         if (updatedChat) {
           updatedChat.text += "Error fetching response";
         }
-        loading.value = false;
         return;
       }
       if (text.indexOf("event: thread_id") === 0) {
@@ -70,6 +99,14 @@ const submitChat = async (chat, type) => {
           threadId.value = text.split("data: ")[1].trim();
           router.push(`/chat/${threadId.value}`);
         }
+        continue;
+      }
+      if (text.indexOf("event: thread_title") === 0) {
+        const title = text.split("data: ")[1].trim();
+        chatHistory.value = [
+          { threadId: threadId.value, title },
+          ...chatHistory.value,
+        ];
         continue;
       }
       if (text.indexOf("event: web_search") === 0) {
@@ -82,15 +119,11 @@ const submitChat = async (chat, type) => {
         }
         continue;
       }
-      if (text.trim()) {
-        loading.value = false;
-      }
       if (updatedChat) {
         updatedChat.text += text;
       }
     }
   } catch (error) {
-    loading.value = false;
     const updatedChat = chats.value.find((c) => c.id === assistantId);
     if (updatedChat) {
       updatedChat.text += "Error fetching response";
@@ -105,10 +138,29 @@ const handleNewChat = () => {
   threadId.value = "";
   chats.value = [];
 };
+
+const handleHistorySelect = async (threadId) => {
+  const messages = await getMessagesForThreadId(threadId);
+  chats.value = messages;
+  router.push(`/chat/${threadId}`);
+};
+
+const updateChatsForFeedback = (messageId, feedback) => {
+  chats.value = chats.value.map((chat) => {
+    if (chat.id === messageId) {
+      return { ...chat, feedback };
+    }
+    return chat;
+  });
+};
 </script>
 
 <template>
-  <Header @new-chat="handleNewChat" :chatHistory></Header>
+  <Header
+    @new-chat="handleNewChat"
+    @select-history="handleHistorySelect($event)"
+    :chatHistory
+  ></Header>
   <div class="chat-wrapper">
     <div v-if="chats.length == 0" class="welcome-wrapper">
       <Welcome />
@@ -117,9 +169,13 @@ const handleNewChat = () => {
         :loading="loading"
         @submit-chat="submitChat($event, 'user')"
       />
-      <InitialSuggestion />
     </div>
-    <ChatContainer v-if="chats.length > 0" :chats="chats" :loading="loading" />
+    <ChatContainer
+      v-if="chats.length > 0"
+      :chats="chats"
+      :loading="loading"
+      :updateChatsForFeedback="updateChatsForFeedback"
+    />
     <ChatInput
       v-if="chats.length > 0"
       :chats="chats"

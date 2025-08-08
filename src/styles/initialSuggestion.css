@@ -21,6 +21,7 @@
 .suggestion-card:hover {
     background: var(--card-hover-bg);
     color: var(--secondary-text-color);
+    cursor: pointer;
 }
 
 @media screen and (max-width: 880px) {

@@ -8,8 +8,16 @@
     color: var(--primary-text-color);
 }
 
+.header-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+}
+
 .header i.pi {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     cursor: pointer;
 }
 
@@ -22,12 +30,20 @@
 .sidebar-container {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 52px);
-    justify-content: space-between;
+    min-height: calc(100vh - 60px);
+    position: relative;
+}
+
+.user-settings {
+    position: fixed;
+    bottom: 16px;
+    padding: 12px;
+    width: -webkit-fill-available;
+    background-color: var(--secondary-background-color);
 }
 
 .chat-history-container {
-    margin-top: 60px;
+    margin-top: 42px;
 }
 
 .history-item {
@@ -48,4 +64,19 @@
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid rgb(124, 124, 124);
+}
+
+.chat-history-container .p-accordion.p-component button,
+.chat-history-container .p-accordion.p-component div {
+    border-style: unset;
+}
+
+.chat-history-container .p-accordioncontent-content {
+    overflow: scroll;
+    margin-bottom: 52px;
+}
+
+.sidebar .p-drawer-header {
+    font-size: x-large;
+    font-weight: bold;
 }

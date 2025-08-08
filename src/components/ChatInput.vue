@@ -1,11 +1,16 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import Popover from "primevue/popover";
 import useTranscribe from "@/composable/useTranscribe";
 import "../styles/chatInput.css";
+import InitialSuggestion from "./InitialSuggestion.vue";
 
 const emit = defineEmits(["submit-chat"]);
 const props = defineProps({
+  inputText: {
+    type: String,
+    default: "",
+  },
   chats: {
     type: Array,
     default: () => [],
@@ -16,7 +21,16 @@ const props = defineProps({
   },
 });
 
-const { isRecording, toggleRecording } = useTranscribe();
+const { isRecording, toggleRecording, transcribedText } = useTranscribe();
+// Watch for transcribed text and update inputText
+watch(
+  () => transcribedText.value,
+  (newVal) => {
+    if (newVal && newVal.trim().length > 0) {
+      inputText.value = newVal;
+    }
+  }
+);
 
 const inputText = ref("");
 const isFocused = ref(false);
@@ -53,6 +67,15 @@ const handleFocus = () => {
 const handleBlur = () => {
   isFocused.value = false;
 };
+
+const setInputText = (text) => {
+  inputText.value = text;
+};
+
+const microphoneClass = computed(() => ({
+  "pi pi-microphone": true,
+  recording: isRecording.value,
+}));
 </script>
 
 <template>
@@ -68,7 +91,7 @@ const handleBlur = () => {
       <i @click="toggleAdditionalActions" class="pi pi-plus"></i>
       <Popover ref="additionalActions">
         <div class="additional-actions">
-          <label
+          <!-- <label
             style="
               display: flex;
               align-items: center;
@@ -80,13 +103,13 @@ const handleBlur = () => {
             <i class="pi pi-upload" style="margin-right: 8px"></i>
             <span>Upload File</span>
             <input type="file" style="display: none" />
-          </label>
+          </label> -->
+          Coming Soon
         </div>
       </Popover>
       <div>
         <i
-          class="pi pi-microphone"
-          :class="{ recording: isRecording }"
+          :class="microphoneClass"
           @click="toggleRecording"
           :title="isRecording ? 'Stop recording' : 'Start voice input'"
         ></i>
@@ -103,5 +126,8 @@ const handleBlur = () => {
         ></i>
       </div>
     </div>
+  </div>
+  <div v-if="chats.length === 0">
+    <InitialSuggestion :setInputText="setInputText" />
   </div>
 </template>

@@ -4,7 +4,7 @@ import "../styles/chatContainer.css";
 import ChatResponse from "./ChatResponse.vue";
 import { useAutoScroll } from "../composable/useAutoScroll";
 
-const { chats, loading } = defineProps({
+const { chats, loading, updateChatsForFeedback } = defineProps({
   chats: {
     type: Array,
     default: () => [],
@@ -12,6 +12,9 @@ const { chats, loading } = defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  updateChatsForFeedback: {
+    type: Function,
   },
 });
 
@@ -21,7 +24,11 @@ const { chatContainerRef } = useAutoScroll();
 <template>
   <div class="chat-container" ref="chatContainerRef">
     <div v-for="chat in chats">
-      <ChatResponse :chat="chat" :loading="loading"></ChatResponse>
+      <ChatResponse
+        :chat="chat"
+        :loading="loading"
+        :updateChatsForFeedback="updateChatsForFeedback"
+      ></ChatResponse>
     </div>
 
     <!-- Loading dots animation -->

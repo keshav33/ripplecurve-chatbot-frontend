@@ -10,7 +10,6 @@
 
 .input-container.focused {
     border-color: var(--accent-color);
-    background: var(--background-color);
 }
 
 .pan-bottom {
@@ -22,7 +21,6 @@ textarea {
     width: 800px;
     height: 60px;
     border-radius: var(--border-radius) var(--border-radius) 0 0;
-    background-color: var(--background-color);
     border: none;
     color: var(--primary-text-color);
     padding: 12px;
@@ -41,7 +39,7 @@ textarea:focus-visible {
     align-items: center;
     width: 800px;
     padding: 12px;
-    background-color: var(--background-color);
+    background-color: #ffffff;
     border-radius: 0 0 var(--border-radius) var(--border-radius);
 }
 

@@ -1,9 +1,12 @@
 <script setup>
 import "../styles/header.css";
 import { ref } from "vue";
-import Popover from "primevue/popover";
 import Drawer from "primevue/drawer";
-
+import Accordion from "primevue/accordion";
+import AccordionPanel from "primevue/accordionpanel";
+import AccordionHeader from "primevue/accordionheader";
+import AccordionContent from "primevue/accordioncontent";
+import { UserButton, useUser } from "@clerk/vue";
 const { chatHistory } = defineProps({
   chatHistory: {
     type: Array,
@@ -12,13 +15,11 @@ const { chatHistory } = defineProps({
 });
 
 const isSidebarOpen = ref(false);
-const showSettings = ref(false);
+
+const { user } = useUser();
 
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
-};
-const toggleSettings = (event) => {
-  showSettings.value.toggle(event);
 };
 </script>
 
@@ -28,17 +29,10 @@ const toggleSettings = (event) => {
       <!-- Hamburger menu -->
       <i v-if="!isSidebarOpen" @click="toggleSidebar" class="pi pi-bars"></i>
     </div>
-    <div>
-      <i
-        style="margin-right: 18px"
-        @click="$emit('new-chat')"
-        class="pi pi-comment"
-      ></i>
-      <i @click="toggleSettings" class="pi pi-cog"></i>
+    <div class="header-actions">
+      <i @click="$emit('new-chat')" class="pi pi-comment"></i>
+      <UserButton />
     </div>
-    <Popover ref="showSettings">
-      <div class="settings">TODO: Add some settings</div>
-    </Popover>
     <Drawer
       v-model:visible="isSidebarOpen"
       class="sidebar"
@@ -46,14 +40,28 @@ const toggleSettings = (event) => {
     >
       <div class="sidebar-container">
         <div class="chat-history-container">
-          <div style="font-size: large; font-weight: bold">
-            Conversation History
-          </div>
-          <div v-for="history in chatHistory" class="history-item">
-            {{ history.title }}
-          </div>
+          <Accordion>
+            <AccordionPanel>
+              <AccordionHeader style="font-size: large; font-weight: bold"
+                >Conversation History</AccordionHeader
+              >
+              <AccordionContent>
+                <div
+                  v-for="history in chatHistory"
+                  class="history-item"
+                  @click="$emit('select-history', history.threadId)"
+                >
+                  {{ history.title }}
+                </div>
+              </AccordionContent>
+            </AccordionPanel>
+          </Accordion>
         </div>
-        <div><i class="pi pi-user" style="margin-right: 8px"></i>Keshav</div>
+        <div class="user-settings">
+          <span style="display: flex; align-items: center; gap: 8px"
+            ><UserButton />{{ user.fullName }}</span
+          >
+        </div>
       </div>
     </Drawer>
   </div>

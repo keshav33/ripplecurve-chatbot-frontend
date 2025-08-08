@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 const useTranscribe = () => {
     const isRecording = ref(false);
     const recognition = ref(null);
+    const transcribedText = ref('');
 
     // Initialize speech recognition on component mount
     onMounted(() => {
@@ -29,9 +30,10 @@ const useTranscribe = () => {
                     }
                 }
 
-                // Update input text with final transcript
+                // Set transcribedText to the final transcript
                 if (finalTranscript) {
-                    inputText.value += finalTranscript;
+                    transcribedText.value = finalTranscript.trim();
+                    stopRecording(); // Stop recording after final result
                 }
             };
 
@@ -95,7 +97,8 @@ const useTranscribe = () => {
         recognition,
         startRecording,
         stopRecording,
-        toggleRecording
+        toggleRecording,
+        transcribedText
     }
 }
 
