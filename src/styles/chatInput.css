@@ -26,6 +26,7 @@ textarea {
     padding: 12px;
     resize: none;
     font-family: var(--font-family);
+    font-size: medium;
 }
 
 textarea:focus-visible {

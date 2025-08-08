@@ -87,17 +87,24 @@ const submitChat = async (chat, type) => {
     const decoder = new TextDecoder();
     let done, value;
 
+    const index = chats.value.findIndex((c) => c.id === assistantId);
+
     while (true) {
       ({ done, value } = await reader.read());
       if (done) break;
 
       const text = decoder.decode(value, { stream: true });
-      const updatedChat = chats.value.find((c) => c.id === assistantId);
 
       if (text.indexOf("event: error") === 0) {
-        if (updatedChat) updatedChat.text += "Error fetching response";
+        if (index !== -1) {
+          chats.value[index] = {
+            ...chats.value[index],
+            text: "Error fetching response",
+          };
+        }
         return;
       }
+
       if (text.indexOf("event: thread_id") === 0) {
         if (!threadId.value) {
           threadId.value = text.split("data: ")[1].trim();
@@ -105,6 +112,7 @@ const submitChat = async (chat, type) => {
         }
         continue;
       }
+
       if (text.indexOf("event: thread_title") === 0) {
         const title = text.split("data: ")[1].trim();
         chatHistory.value = [
@@ -113,24 +121,41 @@ const submitChat = async (chat, type) => {
         ];
         continue;
       }
+
       if (text.indexOf("event: web_search") === 0) {
         const searchResult = text.split("data: ")[1].trim();
         const resultJson = JSON.parse(searchResult);
         const urls = (resultJson?.results || []).map((result) => result.url);
-        if (updatedChat) {
-          updatedChat.isWebSearch = true;
-          updatedChat.urls = urls;
+        if (index !== -1) {
+          chats.value[index] = {
+            ...chats.value[index],
+            isWebSearch: true,
+            urls,
+          };
         }
         continue;
       }
-      if (updatedChat) {
-        updatedChat.text += text;
+
+      if (index !== -1) {
+        chats.value[index] = {
+          ...chats.value[index],
+          text: chats.value[index].text + text,
+        };
       }
     }
+    if (!chats.value[index].text) {
+      chats.value[index] = {
+        ...chats.value[index],
+        text: "Something went wrong",
+      };
+    }
   } catch (error) {
-    const updatedChat = chats.value.find((c) => c.id === assistantId);
-    if (updatedChat) {
-      updatedChat.text += "Error fetching response";
+    const index = chats.value.findIndex((c) => c.id === assistantId);
+    if (index !== -1) {
+      chats.value[index] = {
+        ...chats.value[index],
+        text: "Error fetching response",
+      };
     }
   } finally {
     loading.value = false;

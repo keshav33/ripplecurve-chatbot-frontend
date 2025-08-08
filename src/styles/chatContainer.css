@@ -63,7 +63,7 @@
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: calc(100dvh - var(--header-height) - 130px);
+    height: calc(100dvh - var(--header-height) - 148px);
     overflow: scroll;
     width: 800px;
 }
