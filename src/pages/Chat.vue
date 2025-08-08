@@ -75,7 +75,6 @@ const submitChat = async (chat, type) => {
       humanId,
       assistantId,
     });
-    const decoder = new TextDecoder();
     chats.value.push({
       id: assistantId,
       type: "assistant",
@@ -84,14 +83,19 @@ const submitChat = async (chat, type) => {
       urls: [],
     });
 
-    for await (const chunk of streamEvent.body) {
-      const text = decoder.decode(chunk, { stream: true });
+    const reader = streamEvent.body.getReader();
+    const decoder = new TextDecoder();
+    let done, value;
+
+    while (true) {
+      ({ done, value } = await reader.read());
+      if (done) break;
+
+      const text = decoder.decode(value, { stream: true });
       const updatedChat = chats.value.find((c) => c.id === assistantId);
+
       if (text.indexOf("event: error") === 0) {
-        const updatedChat = chats.value.find((c) => c.id === assistantId);
-        if (updatedChat) {
-          updatedChat.text += "Error fetching response";
-        }
+        if (updatedChat) updatedChat.text += "Error fetching response";
         return;
       }
       if (text.indexOf("event: thread_id") === 0) {
