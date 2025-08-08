@@ -1,6 +1,7 @@
 .welcome-container h1 {
-    margin-bottom: 58px;
+    margin-bottom: 42px;
     color: #3a4151;
     font-weight: 600;
     letter-spacing: 0.01em;
+    text-align: center;
 }
