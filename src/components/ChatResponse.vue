@@ -3,7 +3,10 @@ import { updateFeedback } from "@/api/chat";
 import VueMarkdown from "vue-markdown-render";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
+import { useToast } from "primevue/usetoast";
+
 const route = useRoute();
+const toast = useToast();
 const { chat, loading, updateChatsForFeedback } = defineProps({
   chat: {
     type: Object,
@@ -23,12 +26,21 @@ const chatClass = {
 };
 
 const handleFeedback = async (messageId, feedback) => {
-  await updateFeedback({
-    threadId: route.params.threadId,
-    messageId,
-    feedback,
-  });
-  updateChatsForFeedback(messageId, feedback);
+  try {
+    await updateFeedback({
+      threadId: route.params.threadId,
+      messageId,
+      feedback,
+    });
+    updateChatsForFeedback(messageId, feedback);
+  } catch (err) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Error submitting feedback",
+      life: 3000,
+    });
+  }
 };
 
 const isCopied = ref(false);

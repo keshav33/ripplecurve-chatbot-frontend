@@ -22,9 +22,8 @@
 }
 
 .p-drawer.p-component.sidebar {
-    background: var(--secondary-background-color) !important;
+    background: var(--background-color) !important;
     padding: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar-container {
@@ -39,11 +38,7 @@
     bottom: 16px;
     padding: 12px;
     width: -webkit-fill-available;
-    background-color: var(--secondary-background-color);
-}
-
-.chat-history-container {
-    margin-top: 42px;
+    background-color: var(--background-color);
 }
 
 .history-item {
@@ -54,26 +49,18 @@
     border-radius: 8px;
 }
 
+.chat-history-container .p-accordionheader,
+.chat-history-container .p-accordioncontent-content {
+    background: var(--background-color) !important;
+}
+
 .history-item:hover {
-    background-color: var(--background-color);
-}
-
-.settings {
-    padding: 12px;
-    background-color: var(--secondary-background-color);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgb(124, 124, 124);
-}
-
-.chat-history-container .p-accordion.p-component button,
-.chat-history-container .p-accordion.p-component div {
-    border-style: unset;
+    background-color: var(--secondary-background-color) !important;
 }
 
 .chat-history-container .p-accordioncontent-content {
     overflow: scroll;
-    margin-bottom: 52px;
+    margin-bottom: 32px;
 }
 
 .sidebar .p-drawer-header {

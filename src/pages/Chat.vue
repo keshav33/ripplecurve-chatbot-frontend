@@ -14,6 +14,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { useRouter, useRoute } from "vue-router";
 import { useUser } from "@clerk/vue";
+import { useToast } from "primevue/usetoast";
 
 const router = useRouter();
 const route = useRoute();
@@ -21,6 +22,7 @@ const chats = ref([]);
 const threadId = ref("");
 const user = ref({});
 const { user: clerkUser, isLoaded } = useUser();
+const toast = useToast();
 
 const chatHistory = ref([]);
 
@@ -48,7 +50,16 @@ watch(
   () => user.value,
   async () => {
     if (user.value.id) {
-      chatHistory.value = await getChatHistoryForUser(user.value.id);
+      try {
+        chatHistory.value = await getChatHistoryForUser(user.value.id);
+      } catch (err) {
+        toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: "Error fetching chat conversations",
+          life: 3000,
+        });
+      }
     }
   }
 );
@@ -157,6 +168,12 @@ const submitChat = async (chat, type) => {
         text: "Error fetching response",
       };
     }
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Error fetching response",
+      life: 3000,
+    });
   } finally {
     loading.value = false;
   }
@@ -169,9 +186,18 @@ const handleNewChat = () => {
 };
 
 const handleHistorySelect = async (threadId) => {
-  const messages = await getMessagesForThreadId(threadId);
-  chats.value = messages;
-  router.push(`/chat/${threadId}`);
+  try {
+    const messages = await getMessagesForThreadId(threadId);
+    chats.value = messages;
+    router.push(`/chat/${threadId}`);
+  } catch (err) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Error fetching messages",
+      life: 3000,
+    });
+  }
 };
 
 const updateChatsForFeedback = (messageId, feedback) => {
