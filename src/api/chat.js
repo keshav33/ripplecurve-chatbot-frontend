@@ -8,7 +8,7 @@ const getClerkToken = async () => {
     return token
 }
 
-export const getChatStreamEvent = async ({ message, threadId, user, humanId, assistantId }) => {
+export const getChatStreamEvent = async ({ message, threadId, user, humanId, assistantId, file }) => {
     return fetch(`${BASE_URL}/chat/stream`, {
         method: 'POST',
         headers: {
@@ -16,7 +16,7 @@ export const getChatStreamEvent = async ({ message, threadId, user, humanId, ass
             Authorization: `Bearer ${await getClerkToken()}`
         },
         body: JSON.stringify({
-            message, threadId, user, humanId, assistantId
+            message, threadId, user, humanId, assistantId, file
         })
     });
 }
@@ -46,4 +46,23 @@ export const updateFeedback = async ({ threadId, messageId, feedback }) => {
             Authorization: `Bearer ${await getClerkToken()}`,
         }
     })
+}
+
+export const uploadFile = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file)
+    return axios.post(`${BASE_URL}/chat/upload-file`, formData, {
+        headers: {
+            Authorization: `Bearer ${await getClerkToken()}`,
+        }
+    })
+        .then(res => res.data)
+}
+
+export const deleteThread = async (threadId) => {
+    return axios.delete(`${BASE_URL}/chat/thread?threadId=${threadId}`, {
+        headers: {
+            Authorization: `Bearer ${await getClerkToken()}`,
+        }
+    }).then(res => res.data)
 }

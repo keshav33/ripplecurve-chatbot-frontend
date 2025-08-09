@@ -46,12 +46,19 @@ const toggleSidebar = () => {
                 >Conversation History</AccordionHeader
               >
               <AccordionContent>
-                <div
-                  v-for="history in chatHistory"
-                  class="history-item"
-                  @click="$emit('select-history', history.threadId)"
-                >
-                  {{ history.title }}
+                <div v-for="history in chatHistory" class="history-item">
+                  <div
+                    class="text-ellipsis"
+                    @click="$emit('select-history', history.threadId)"
+                  >
+                    {{ history.title }}
+                  </div>
+                  <div>
+                    <i
+                      @click="$emit('delete-thread', history.threadId)"
+                      class="pi pi-trash"
+                    ></i>
+                  </div>
                 </div>
               </AccordionContent>
             </AccordionPanel>

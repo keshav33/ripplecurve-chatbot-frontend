@@ -7,9 +7,11 @@ import Footer from "@/components/Footer.vue";
 import "../styles/chat.css";
 import { ref, onMounted, watch } from "vue";
 import {
+  deleteThread,
   getChatHistoryForUser,
   getChatStreamEvent,
   getMessagesForThreadId,
+  uploadFile,
 } from "@/api/chat";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter, useRoute } from "vue-router";
@@ -21,6 +23,7 @@ const route = useRoute();
 const chats = ref([]);
 const threadId = ref("");
 const user = ref({});
+const uploadedFile = ref({});
 const { user: clerkUser, isLoaded } = useUser();
 const toast = useToast();
 
@@ -85,6 +88,7 @@ const submitChat = async (chat, type) => {
       user: user.value,
       humanId,
       assistantId,
+      file: uploadedFile.value,
     });
     chats.value.push({
       id: assistantId,
@@ -176,6 +180,7 @@ const submitChat = async (chat, type) => {
     });
   } finally {
     loading.value = false;
+    uploadedFile.value = {};
   }
 };
 
@@ -208,12 +213,46 @@ const updateChatsForFeedback = (messageId, feedback) => {
     return chat;
   });
 };
+
+const handleUploadFile = async (file) => {
+  try {
+    const { fileId, fileType } = await uploadFile(file);
+    uploadedFile.value = {
+      fileId,
+      fileType,
+    };
+    toast.add({
+      severity: "success",
+      summary: "Success",
+      detail: "File upoaded",
+      life: 3000,
+    });
+  } catch {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Error while uploading file",
+      life: 3000,
+    });
+  }
+};
+
+const handleDeleteThread = async (sidebarThreadId) => {
+  await deleteThread(sidebarThreadId);
+  if (sidebarThreadId === threadId) {
+    handleNewChat();
+  }
+  chatHistory.value = chatHistory.value.filter(
+    (history) => history.threadId !== sidebarThreadId
+  );
+};
 </script>
 
 <template>
   <Header
     @new-chat="handleNewChat"
     @select-history="handleHistorySelect($event)"
+    @delete-thread="handleDeleteThread($event)"
     :chatHistory
   ></Header>
   <div class="chat-wrapper">
@@ -223,6 +262,7 @@ const updateChatsForFeedback = (messageId, feedback) => {
         :chats="chats"
         :loading="loading"
         @submit-chat="submitChat($event, 'user')"
+        @upload-file="handleUploadFile($event)"
       />
     </div>
     <ChatContainer
@@ -236,6 +276,7 @@ const updateChatsForFeedback = (messageId, feedback) => {
       :chats="chats"
       :loading="loading"
       @submit-chat="submitChat($event, 'user')"
+      @upload-file="handleUploadFile($event)"
     />
     <Footer></Footer>
   </div>

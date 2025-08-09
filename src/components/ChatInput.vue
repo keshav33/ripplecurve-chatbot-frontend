@@ -5,7 +5,7 @@ import useTranscribe from "@/composable/useTranscribe";
 import "../styles/chatInput.css";
 import InitialSuggestion from "./InitialSuggestion.vue";
 
-const emit = defineEmits(["submit-chat"]);
+const emit = defineEmits(["submit-chat", "upload-file"]);
 const props = defineProps({
   inputText: {
     type: String,
@@ -22,7 +22,31 @@ const props = defineProps({
 });
 
 const { isRecording, toggleRecording, transcribedText } = useTranscribe();
-// Watch for transcribed text and update inputText
+
+const fileInput = ref(null);
+
+const handleFileUpload = (event) => {
+  if (event.target.files.length > 1) {
+    alert("1 file max");
+    event.target.value = "";
+    return;
+  }
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  if (file.type !== "application/pdf") {
+    alert("Only PDF files are allowed.");
+    event.target.value = "";
+    return;
+  }
+
+  // Emit the selected file to parent
+  emit("upload-file", file);
+
+  // Reset input so same file can be selected again if needed
+  event.target.value = "";
+};
+
 watch(
   () => transcribedText.value,
   (newVal) => {
@@ -91,7 +115,7 @@ const microphoneClass = computed(() => ({
       <i @click="toggleAdditionalActions" class="pi pi-plus"></i>
       <Popover ref="additionalActions">
         <div class="additional-actions">
-          <!-- <label
+          <label
             style="
               display: flex;
               align-items: center;
@@ -101,10 +125,15 @@ const microphoneClass = computed(() => ({
             "
           >
             <i class="pi pi-upload" style="margin-right: 8px"></i>
-            <span>Upload File</span>
-            <input type="file" style="display: none" />
-          </label> -->
-          Coming Soon
+            <span>Upload PDF</span>
+            <input
+              ref="fileInput"
+              type="file"
+              accept="application/pdf"
+              @change="handleFileUpload"
+              style="display: none"
+            />
+          </label>
         </div>
       </Popover>
       <div>
